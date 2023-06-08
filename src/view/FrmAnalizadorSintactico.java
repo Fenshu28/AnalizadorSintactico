@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
-public class AnalizadorSintactico extends javax.swing.JFrame {
+public class FrmAnalizadorSintactico extends javax.swing.JFrame {
 
     private List<Regla> reglas;
     private final DefaultTableModel modelo;
@@ -18,7 +18,7 @@ public class AnalizadorSintactico extends javax.swing.JFrame {
     private TablaAnalisis tabla;
     private String expresion;
 
-    public AnalizadorSintactico() {
+    public FrmAnalizadorSintactico() {
         this.expresion = "";
         initComponents();
         modelo = (DefaultTableModel) tblReglas.getModel();
@@ -172,7 +172,11 @@ public class AnalizadorSintactico extends javax.swing.JFrame {
         reglas = new ArrayList<>();
         controlador.guardarReglas(modelo, reglas);
         tabla = new TablaAnalisis(reglas);
-        controlador.crearAnalisis(tabla, reglas);
+        /**
+         * Inicicia el análisis con el texto que se introdujo en el txtEntrada
+         */
+        controlador.crearAnalisis(tabla, reglas, txtEntrada.getText());
+        
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
@@ -204,7 +208,7 @@ public class AnalizadorSintactico extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new AnalizadorSintactico().setVisible(true);
+                new FrmAnalizadorSintactico().setVisible(true);
             }
         });
     }

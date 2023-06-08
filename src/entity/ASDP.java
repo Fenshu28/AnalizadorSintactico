@@ -14,9 +14,16 @@ import java.util.List;
 public class ASDP {
     private PilaSimbolos pila;
     private TablaAnalisis tabla;
-//    private char tabla[][] = new char[50][50];
     private String resLexico;
     private List<Regla> reglas;
+    private int iReglaAct;
+
+    public ASDP() {
+    }
+    
+    public ASDP(String resLexico) {
+        this.resLexico = resLexico;
+    }
 
     public void setTablaAnalisis(TablaAnalisis tabla) {
         //Aquí se llenaria la tabla de analisis
@@ -24,7 +31,7 @@ public class ASDP {
     }
 
     public void analizar() {
-        Simbolo A = new Simbolo();
+        Simbolo A = new Simbolo(reglas);
         Simbolo a = new Simbolo(reglas);
         
         pila = new PilaSimbolos();
@@ -41,20 +48,24 @@ public class ASDP {
                     //a = analex(); //Siguiente simbolo del preanalisis
                 } else {
                     //ErrorSintactico();
-                    System.out.println("Error de sintaxis. no se puede realizar la reducción.");
+                    System.out.println("Error de sintaxis. no se puede "
+                            + "realizar la reducción.");
                     break;
                 }
             } else {
-//                if (tabla(A.getSimbolo(),a.getSimbolo()) = regla(A:: = c1 c2 … ck)) { 
-//                    pila.pop(A);
-//                    for (int i = k; i > 0; i--) {
-//                        pila.push(ci);
-//                    }
-//                }else {
-//                    ErrorSintactico;
-//                    System.out.println("Error de sintaxis. no se puede "+
-//                            " realizar la reducción.");
-//                }
+                iReglaAct = tabla.getReglaAt(A.getSimbolo(),
+                        a.getSimbolo());
+                if (iReglaAct > 0) { 
+                    pila.pop();
+                    for (int i = reglas.get(iReglaAct).getProduccion().length(); i > 0; i--) {
+                        if(reglas.get(iReglaAct).getProduccion().charAt(i) != ' ')
+                            pila.push(reglas.get(iReglaAct).getProduccion().charAt(i));
+                    }
+                }else {
+                    //ErrorSintactico;
+                    System.out.println("Error de sintaxis. no se puede "+
+                            "realizar la reducción.");
+                }
             }
         }
     }

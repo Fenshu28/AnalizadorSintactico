@@ -11,7 +11,6 @@ package controller;
 import entity.ASDP;
 import entity.Regla;
 import entity.TablaAnalisis;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -38,8 +37,14 @@ public class ASDPcontroller {
     }
     
     public void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas){
-        tabla.splitTerminales();
         ASDP analisis = new ASDP();
+        analisis.setReglas(reglas);
+        analisis.setTablaAnalisis(tabla);
+        
+    }
+    
+    public void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas,String lexico){
+        ASDP analisis = new ASDP(lexico);
         analisis.setReglas(reglas);
         analisis.setTablaAnalisis(tabla);
         
