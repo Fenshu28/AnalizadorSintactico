@@ -91,5 +91,8 @@ public class TablaAnalisis {
         return tabla[i][j];
     }
     
+    public void setValorAt(int fila, int columna,int valor){
+        tabla[fila][columna] = valor;
+    }
     
 }

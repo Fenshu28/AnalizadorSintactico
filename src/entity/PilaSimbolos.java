@@ -26,8 +26,7 @@ public class PilaSimbolos {
         pila.remove(tope);
         tope--;
         
-        return temp;
-        
+        return temp;       
     }
 
     public void push(char item) {
@@ -38,4 +37,11 @@ public class PilaSimbolos {
     public char getCima() {
         return pila.get(tope);
     }    
+    
+    public void fillPila(String texto){
+        push('$');
+        for(int i = texto.length(); i >= 0; i--){
+            push(texto.charAt(i));
+        }        
+    }
 }

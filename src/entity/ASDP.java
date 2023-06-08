@@ -13,6 +13,7 @@ import java.util.List;
 
 public class ASDP {
     private PilaSimbolos pila;
+    private PilaSimbolos pilaLexico;
     private TablaAnalisis tabla;
     private String resLexico;
     private List<Regla> reglas;
@@ -41,11 +42,12 @@ public class ASDP {
         
         while (A.getSimbolo() != '$') {
             A.setSimbolo(pila.getCima());
-            //a = analex();//Siguiente simbolo del preanalisis
+            a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
+            
             if (A.esTerminal() || A.getSimbolo() == '$') {
                 if (A.getSimbolo() == a.getSimbolo()) {
                     pila.pop();
-                    //a = analex(); //Siguiente simbolo del preanalisis
+                    a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
                 } else {
                     //ErrorSintactico();
                     System.out.println("Error de sintaxis. no se puede "
@@ -69,6 +71,14 @@ public class ASDP {
             }
         }
     }
+    
+    private char getToken(){
+        if(resLexico != null){
+            return pilaLexico.pop();
+        }else{
+            return 5;
+        }        
+    }
 
     public void setPila(PilaSimbolos pila) {
         this.pila = pila;
@@ -81,6 +91,8 @@ public class ASDP {
     public void setReglas(List<Regla> reglas) {
         this.reglas = reglas;
     }
+    
+    
     
     
     

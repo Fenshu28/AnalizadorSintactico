@@ -7,7 +7,6 @@ import entity.TablaAnalisis;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 public class FrmAnalizadorSintactico extends javax.swing.JFrame {
@@ -87,6 +86,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
             }
         });
 
+        pnlSimbolos.setBorder(javax.swing.BorderFactory.createTitledBorder("Símbolos"));
         pnlSimbolos.setName(""); // NOI18N
 
         btnFinCadena.setText("$");
@@ -147,7 +147,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
                     .addComponent(txtRegla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -160,7 +160,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
                     .addComponent(txtEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAnalizar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -172,6 +172,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         reglas = new ArrayList<>();
         controlador.guardarReglas(modelo, reglas);
         tabla = new TablaAnalisis(reglas);
+        
         /**
          * Inicicia el análisis con el texto que se introdujo en el txtEntrada
          */
@@ -201,6 +202,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         try {
 //            UIManager.setLookAndFeel(new FlatMacLightLaf());
             FlatGrayIJTheme.setup();
+            FrmAnalizadorSintactico.setDefaultLookAndFeelDecorated( true );
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }

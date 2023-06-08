@@ -17,6 +17,8 @@ import javax.swing.table.DefaultTableModel;
 
 
 public class ASDPcontroller {
+    private ASDP analisis;
+    
     public void guardarReglas(DefaultTableModel modelo, List<Regla> reglas){
         int contFila = modelo.getRowCount();       
         
@@ -36,17 +38,15 @@ public class ASDPcontroller {
         }
     }
     
-    public void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas){
-        ASDP analisis = new ASDP();
+    private void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas){
+        analisis = new ASDP();
         analisis.setReglas(reglas);
-        analisis.setTablaAnalisis(tabla);
-        
+        analisis.setTablaAnalisis(tabla);        
     }
     
     public void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas,String lexico){
-        ASDP analisis = new ASDP(lexico);
-        analisis.setReglas(reglas);
-        analisis.setTablaAnalisis(tabla);
+        crearAnalisis(tabla, reglas);
+        analisis.analizar();
         
     }
 }
