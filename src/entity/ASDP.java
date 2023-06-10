@@ -38,7 +38,7 @@ public class ASDP {
         pila = new PilaSimbolos();
         
         pila.push('$');
-        pila.push('S');
+        pila.push(reglas.get(0).getNoTerminal().charAt(0));
         
         while (A.getSimbolo() != '$') {
             A.setSimbolo(pila.getCima());
@@ -47,6 +47,7 @@ public class ASDP {
             if (A.esTerminal() || A.getSimbolo() == '$') {
                 if (A.getSimbolo() == a.getSimbolo()) {
                     pila.pop();
+                    System.out.println("Emparejar " + a.getSimbolo());
                     a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
                 } else {
                     //ErrorSintactico();
@@ -59,6 +60,8 @@ public class ASDP {
                         a.getSimbolo());
                 if (iReglaAct > 0) { 
                     pila.pop();
+                    System.out.print("Reducción a: " + reglas.get(iReglaAct).toString());
+                    
                     for (int i = reglas.get(iReglaAct).getProduccion().length(); i > 0; i--) {
                         if(reglas.get(iReglaAct).getProduccion().charAt(i) != ' ')
                             pila.push(reglas.get(iReglaAct).getProduccion().charAt(i));
@@ -73,11 +76,11 @@ public class ASDP {
     }
     
     private char getToken(){
-        if(resLexico != null){
+//        if(resLexico != null){
             return pilaLexico.pop();
-        }else{
-            return 5;
-        }        
+//        }else{
+//            return 5;
+//        }        
     }
 
     public void setPila(PilaSimbolos pila) {
@@ -91,6 +94,7 @@ public class ASDP {
     public void setReglas(List<Regla> reglas) {
         this.reglas = reglas;
     }
+    
     
     
     

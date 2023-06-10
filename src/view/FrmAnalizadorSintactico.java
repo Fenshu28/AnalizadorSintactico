@@ -45,6 +45,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         btnModo = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Analizador sintáctico desendente predictivo");
         setResizable(false);
 
         jLabel1.setText("Ingresa las reglas:");
@@ -221,8 +222,10 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     private void btnModoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModoActionPerformed
         if(btnModo.isSelected()){
             btnModo.setText("Archivo");
+            txtEntrada.putClientProperty("JTextField.trailingComponent", new JButton("..."));
         }else{
             btnModo.setText("Texto");
+            txtEntrada.putClientProperty("JTextField.trailingComponent", null);
         }
     }//GEN-LAST:event_btnModoActionPerformed
 

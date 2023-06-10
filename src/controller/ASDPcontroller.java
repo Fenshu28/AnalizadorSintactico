@@ -14,14 +14,14 @@ import entity.TablaAnalisis;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import view.FrmTablaAnalisis;
 
 
 public class ASDPcontroller {
     private ASDP analisis;
     
     public void guardarReglas(DefaultTableModel modelo, List<Regla> reglas){
-        int contFila = modelo.getRowCount();       
-        
+        int contFila = modelo.getRowCount();
         
         for (int i = 0; i<contFila;i++) {
             try {
@@ -38,15 +38,17 @@ public class ASDPcontroller {
         }
     }
     
-    private void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas){
-        analisis = new ASDP();
-        analisis.setReglas(reglas);
-        analisis.setTablaAnalisis(tabla);        
-    }
-    
     public void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas,String lexico){
-        crearAnalisis(tabla, reglas);
-        analisis.analizar();
+        analisis = new ASDP(lexico);
+        analisis.setReglas(reglas);
+        
+        FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis();
+        tablaAnalisisFrm.setTabla(tabla);
+        tablaAnalisisFrm.setVisible(true);
+        
+//        analisis.setTablaAnalisis(tabla); 
+               
+//        analisis.analizar();
         
     }
 }

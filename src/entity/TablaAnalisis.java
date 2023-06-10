@@ -73,6 +73,8 @@ public class TablaAnalisis {
                     terminales.add(encontrado);
             }
         }
+        
+        terminales.add("$");
     }
     
     public int getReglaAt(char noTerminal,char terminal){
@@ -93,6 +95,22 @@ public class TablaAnalisis {
     
     public void setValorAt(int fila, int columna,int valor){
         tabla[fila][columna] = valor;
+    }
+    
+    public int getSizeTerminales(){
+        return terminales.size();
+    }
+    
+    public int getSizeNoTerminales(){
+        return noTerminales.size();
+    }
+
+    public List<String> getTerminales() {
+        return terminales;
+    }
+
+    public List<String> getNoTerminales() {
+        return noTerminales;
     }
     
 }
