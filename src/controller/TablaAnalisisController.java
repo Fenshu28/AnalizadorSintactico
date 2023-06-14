@@ -12,15 +12,24 @@ import entity.TablaAnalisis;
 import javax.swing.table.DefaultTableModel;
 
 public class TablaAnalisisController {
+    /**
+     * Rellena la tabla con los valores ingresados en la tabla de la ventana
+     * @param tabla
+     * Es el objeto Tabla de análisis donde tendremos alamcenada la tabla de 
+     * análisis.
+     * @param modeloTabla 
+     * Es el modelo de la tabla que tiene el análisis.
+     */
     public void setReglasATablas(TablaAnalisis tabla, 
             DefaultTableModel modeloTabla){
         int valor;
-        for (int i = 0; i < modeloTabla.getRowCount(); i++) {
-            for (int j = 0; j < modeloTabla.getColumnCount(); j++) {
-                valor = (int) modeloTabla.getValueAt(j, j);
-                if(valor > 0){
-                    tabla.setValorAt(i, j,
-                            (int) modeloTabla.getValueAt(j, j));
+        for (int i = 1; i < modeloTabla.getRowCount(); i++) {
+            for (int j = 1; j < modeloTabla.getColumnCount(); j++) {
+                if(!String.valueOf(modeloTabla.getValueAt(i, j)).equals("")){
+                    valor = Integer.parseInt(modeloTabla.getValueAt(i, j).toString());
+                    tabla.setValorAt(i-1, j-1,valor);
+                }else{
+                    tabla.setValorAt(i-1, j-1,-1);
                 }
             }
         }

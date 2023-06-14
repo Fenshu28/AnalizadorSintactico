@@ -15,7 +15,6 @@ public class ASDP {
     private PilaSimbolos pila;
     private PilaSimbolos pilaLexico;
     private TablaAnalisis tabla;
-    private String resLexico;
     private List<Regla> reglas;
     private int iReglaAct;
 
@@ -23,7 +22,8 @@ public class ASDP {
     }
     
     public ASDP(String resLexico) {
-        this.resLexico = resLexico;
+        pilaLexico = new PilaSimbolos();
+        pilaLexico.fillPila(resLexico);        
     }
 
     public void setTablaAnalisis(TablaAnalisis tabla) {
@@ -40,14 +40,15 @@ public class ASDP {
         pila.push('$');
         pila.push(reglas.get(0).getNoTerminal().charAt(0));
         
+        a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
+                    
         while (A.getSimbolo() != '$') {
             A.setSimbolo(pila.getCima());
-            a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
             
             if (A.esTerminal() || A.getSimbolo() == '$') {
                 if (A.getSimbolo() == a.getSimbolo()) {
                     pila.pop();
-                    System.out.println("Emparejar " + a.getSimbolo());
+                    System.out.println("        Emparejar " + a.getSimbolo());
                     a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
                 } else {
                     //ErrorSintactico();
@@ -60,9 +61,9 @@ public class ASDP {
                         a.getSimbolo());
                 if (iReglaAct > 0) { 
                     pila.pop();
-                    System.out.print("Reducción a: " + reglas.get(iReglaAct).toString());
-                    
-                    for (int i = reglas.get(iReglaAct).getProduccion().length(); i > 0; i--) {
+                    System.out.println("Reducción a: " + reglas.get(iReglaAct-1).toString());
+                    iReglaAct--;
+                    for (int i = reglas.get(iReglaAct).getProduccion().length()-1; i >= 0; i--) {
                         if(reglas.get(iReglaAct).getProduccion().charAt(i) != ' ')
                             pila.push(reglas.get(iReglaAct).getProduccion().charAt(i));
                     }
@@ -86,18 +87,8 @@ public class ASDP {
     public void setPila(PilaSimbolos pila) {
         this.pila = pila;
     }
-
-    public void setResLexico(String resLexico) {
-        this.resLexico = resLexico;
-    }
-
+    
     public void setReglas(List<Regla> reglas) {
         this.reglas = reglas;
-    }
-    
-    
-    
-    
-    
-    
+    }    
 }

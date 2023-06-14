@@ -17,6 +17,7 @@ public class PilaSimbolos {
     
     public PilaSimbolos(){
         this.pila = new ArrayList<>();        
+        tope = -1;
     }
 
     public char pop(){
@@ -40,7 +41,7 @@ public class PilaSimbolos {
     
     public void fillPila(String texto){
         push('$');
-        for(int i = texto.length(); i >= 0; i--){
+        for(int i = texto.length()-1; i >= 0; i--){
             push(texto.charAt(i));
         }        
     }

@@ -14,12 +14,16 @@ import entity.TablaAnalisis;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import view.FrmTablaAnalisis;
-
 
 public class ASDPcontroller {
     private ASDP analisis;
-    
+    /**
+     * Almacena las reglas que el usuario ingreso en una lista.
+     * @param modelo
+     * El modelo de la tabla que tiene las reglas, en crudo.
+     * @param reglas 
+     * La lista donde se almacenarán las reglas ya procesadas.
+     */
     public void guardarReglas(DefaultTableModel modelo, List<Regla> reglas){
         int contFila = modelo.getRowCount();
         
@@ -38,17 +42,25 @@ public class ASDPcontroller {
         }
     }
     
+    /**
+     * Comienza el análisis sintactico a partir de algunos parametros:
+     * @param tabla
+     * Es el objeto Tabla de análisis en donde tendremos almacenada la tabla de 
+     * análisis.
+     * @param reglas
+     * Es la lista de reglas ya procesadas.
+     * @param lexico 
+     * Es el conjunto de letras que vá a analisar o el archivo de donde sacara
+     * el análisis.
+     */
     public void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas,String lexico){
         analisis = new ASDP(lexico);
         analisis.setReglas(reglas);
-        
-        FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis();
-        tablaAnalisisFrm.setTabla(tabla);
-        tablaAnalisisFrm.setVisible(true);
-        
-//        analisis.setTablaAnalisis(tabla); 
+                
+        analisis.setTablaAnalisis(tabla); 
                
-//        analisis.analizar();
-        
+        analisis.analizar();
     }
+    
+    
 }

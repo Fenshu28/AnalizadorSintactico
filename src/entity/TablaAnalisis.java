@@ -50,7 +50,7 @@ public class TablaAnalisis {
     private void splitTerminales(){
         boolean existe = false;
         terminales = new ArrayList<>();
-        String regex = "[a-zA-Z]+|[αε$]";
+        String regex = "[a-zA-Z]+|[α$]";
         String encontrado = "";
         Pattern patron = Pattern.compile(regex);
         

@@ -30,14 +30,17 @@ public class Simbolo {
     }
     
     public boolean esTerminal(){
-        boolean encontrado = false;
+        boolean encontrado = true;
         
         for (Regla regla : reglas) {
-            if(regla.getNoTerminal().equals(String.valueOf(this.simbolo)))
-                encontrado = true;
+            if(regla.getNoTerminal().equals(String.valueOf(this.simbolo))){
+                encontrado = false;
+                break;
+            }
+                
         }
         
-        return !encontrado;
+        return encontrado;
     }
     
 }

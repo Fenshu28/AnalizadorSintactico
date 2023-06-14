@@ -7,13 +7,13 @@ import entity.TablaAnalisis;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class FrmAnalizadorSintactico extends javax.swing.JFrame {
-
-    private List<Regla> reglas;
-    private final DefaultTableModel modelo;
     private final ASDPcontroller controlador = new ASDPcontroller();
+    private final DefaultTableModel modelo;
+    private List<Regla> reglas;
     private TablaAnalisis tabla;
     private String expresion;
 
@@ -81,6 +81,8 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         });
 
         jLabel2.setText("Ingresa la cadena:");
+
+        txtEntrada.setText("abcd");
 
         btnAnalizar.setText("Analizar");
         btnAnalizar.addActionListener(new java.awt.event.ActionListener() {
@@ -190,14 +192,24 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
-        reglas = new ArrayList<>();
-        controlador.guardarReglas(modelo, reglas);
-        tabla = new TablaAnalisis(reglas);
-        
-        /**
-         * Inicicia el análisis con el texto que se introdujo en el txtEntrada
-         */
-        controlador.crearAnalisis(tabla, reglas, txtEntrada.getText());
+        if(!txtEntrada.getText().equals("")){
+            expresion = txtEntrada.getText();
+            reglas = new ArrayList<>();
+            controlador.guardarReglas(modelo, reglas);
+            tabla = new TablaAnalisis(reglas);            
+
+            /**
+             * Inicicia el análisis con el texto que se introdujo en el txtEntrada
+             */
+            FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis(
+                    FrmAnalizadorSintactico.this,this, true);
+            tablaAnalisisFrm.setTabla(tabla);
+            tablaAnalisisFrm.setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(this,
+                    "Ingrea un texo para análisar.", "Advertencia", 
+                    JOptionPane.WARNING_MESSAGE);
+        }
         
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
@@ -222,10 +234,12 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     private void btnModoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModoActionPerformed
         if(btnModo.isSelected()){
             btnModo.setText("Archivo");
-            txtEntrada.putClientProperty("JTextField.trailingComponent", new JButton("..."));
+            txtEntrada.putClientProperty("JTextField.trailingComponent",
+                    new JButton("..."));
         }else{
             btnModo.setText("Texto");
-            txtEntrada.putClientProperty("JTextField.trailingComponent", null);
+            txtEntrada.putClientProperty("JTextField.trailingComponent", 
+                    null);
         }
     }//GEN-LAST:event_btnModoActionPerformed
 
@@ -233,7 +247,8 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         try {
 //            UIManager.setLookAndFeel(new FlatMacLightLaf());
             FlatGrayIJTheme.setup();
-            FrmAnalizadorSintactico.setDefaultLookAndFeelDecorated( true );
+            FrmAnalizadorSintactico.setDefaultLookAndFeelDecorated( 
+                    true );
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }
@@ -246,6 +261,10 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         });
     }
 
+    public void iniciarAnalisis(){
+        controlador.crearAnalisis(tabla, reglas, expresion);
+    }
+    
     private void setVal(JButton txt) {
         expresion = txtRegla.getText();
         expresion += txt.getText();
