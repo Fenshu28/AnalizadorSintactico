@@ -11,6 +11,8 @@ package controller;
 import entity.ASDP;
 import entity.Regla;
 import entity.TablaAnalisis;
+import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -62,5 +64,31 @@ public class ASDPcontroller {
         analisis.analizar();
     }
     
+    public String cargarArchivo(String ruta){
+        File archivo = new File(ruta);
+        FileReader rd = null;
+        int charFile;
+        String caracteres = "";
+
+        try {
+            rd = new FileReader(archivo);
+            System.out.println("Archivo abierto.");
+
+            while ((charFile = rd.read()) != -1) {
+                caracteres += charFile;
+            }
+
+            caracteres +='$';
+
+            rd.close();
+        } catch (Exception e) {
+            System.out.println("Error " + e.getMessage());
+        }
+        
+        return caracteres;
+    }
     
+    public String getResultados(){
+        return analisis.getResultado();
+    }
 }

@@ -4,22 +4,31 @@ import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
 import controller.ASDPcontroller;
 import entity.Regla;
 import entity.TablaAnalisis;
+import java.awt.FileDialog;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class FrmAnalizadorSintactico extends javax.swing.JFrame {
-    private final ASDPcontroller controlador = new ASDPcontroller();
+
+    private final ASDPcontroller controlador;
     private final DefaultTableModel modelo;
     private List<Regla> reglas;
     private TablaAnalisis tabla;
     private String expresion;
+    private boolean isPrimero = true;
+    private JButton btnArchivos;
 
     public FrmAnalizadorSintactico() {
+        this.controlador = new ASDPcontroller();
         this.expresion = "";
         initComponents();
+        btnArchivos = hacerBoton();
         modelo = (DefaultTableModel) tblReglas.getModel();
     }
 
@@ -40,7 +49,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         btnEpsilon = new javax.swing.JButton();
         btnAlfa = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        txtResultado = new javax.swing.JEditorPane();
         jLabel3 = new javax.swing.JLabel();
         btnModo = new javax.swing.JToggleButton();
 
@@ -118,7 +127,10 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         });
         pnlSimbolos.add(btnAlfa);
 
-        jScrollPane2.setViewportView(jEditorPane1);
+        txtResultado.setEditable(false);
+        txtResultado.setBackground(new java.awt.Color(255, 255, 255));
+        txtResultado.setDisabledTextColor(new java.awt.Color(255, 255, 255));
+        jScrollPane2.setViewportView(txtResultado);
 
         jLabel3.setText("Modo");
 
@@ -183,8 +195,8 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
                     .addComponent(txtEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAnalizar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -192,25 +204,38 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
-        if(!txtEntrada.getText().equals("")){
-            expresion = txtEntrada.getText();
+        if (!txtEntrada.getText().equals("")) {
+            expresion = getRecurso();
             reglas = new ArrayList<>();
             controlador.guardarReglas(modelo, reglas);
-            tabla = new TablaAnalisis(reglas);            
 
             /**
-             * Inicicia el análisis con el texto que se introdujo en el txtEntrada
+             * Inicicia el análisis con el texto que se introdujo en el
+             * txtEntrada
              */
-            FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis(
-                    FrmAnalizadorSintactico.this,this, true);
-            tablaAnalisisFrm.setTabla(tabla);
-            tablaAnalisisFrm.setVisible(true);
-        }else{
+            txtResultado.setText("Iniciando el análisis\n");
+            if (isPrimero) {
+                tabla = new TablaAnalisis(reglas);
+
+                FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis(
+                        FrmAnalizadorSintactico.this, this,
+                        true);
+                tablaAnalisisFrm.setTabla(tabla);
+                tablaAnalisisFrm.setVisible(true);
+                isPrimero = false;
+            } else {
+                controlador.crearAnalisis(tabla, reglas, expresion);
+            }
+            
+            txtResultado.setText(controlador.getResultados());
+//            txtResultado.setText( "La cadena:\n" + expresion + "\n es aceptada."
+//                + "\n------------------------------");
+        } else {
             JOptionPane.showMessageDialog(this,
-                    "Ingrea un texo para análisar.", "Advertencia", 
+                    "Ingrea un texo para análisar.", "Advertencia",
                     JOptionPane.WARNING_MESSAGE);
         }
-        
+
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
@@ -232,14 +257,16 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAlfaActionPerformed
 
     private void btnModoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModoActionPerformed
-        if(btnModo.isSelected()){
+        if (btnModo.isSelected()) {
             btnModo.setText("Archivo");
             txtEntrada.putClientProperty("JTextField.trailingComponent",
-                    new JButton("..."));
-        }else{
+                    btnArchivos);
+            txtEntrada.setEditable(false);
+        } else {
             btnModo.setText("Texto");
-            txtEntrada.putClientProperty("JTextField.trailingComponent", 
+            txtEntrada.putClientProperty("JTextField.trailingComponent",
                     null);
+            txtEntrada.setEditable(true);
         }
     }//GEN-LAST:event_btnModoActionPerformed
 
@@ -247,12 +274,12 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         try {
 //            UIManager.setLookAndFeel(new FlatMacLightLaf());
             FlatGrayIJTheme.setup();
-            FrmAnalizadorSintactico.setDefaultLookAndFeelDecorated( 
-                    true );
+            FrmAnalizadorSintactico.setDefaultLookAndFeelDecorated(
+                    true);
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -261,15 +288,59 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         });
     }
 
-    public void iniciarAnalisis(){
+    /**
+     * Inicia el analicis sintactico, este método permite llamar el análisis
+     * desde otros formularios.
+     */
+    public void iniciarAnalisis() {
         controlador.crearAnalisis(tabla, reglas, expresion);
     }
-    
+
+    /**
+     * Obtiene el nombre del componente.
+     *
+     * @param txt El texto del componente.
+     */
     private void setVal(JButton txt) {
         expresion = txtRegla.getText();
         expresion += txt.getText();
 
         txtRegla.setText(expresion);
+    }
+
+    /**
+     * Obtiene la caedena que va a análizar segun el modo.
+     *
+     * @return La cadena a análizar.
+     */
+    private String getRecurso() {
+        if (btnModo.isSelected()) {
+            return controlador.cargarArchivo(txtEntrada.getText());
+        } else {
+            return txtEntrada.getText();
+        }
+    }
+    
+    /**
+     * Construye el botón para elegir el archivo.
+     * @return 
+     * El botón ya construido, con su evento de hacer click.
+     */
+    private JButton hacerBoton() {
+        JButton temp = new JButton("...");
+
+        temp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int seleccion = fileChooser.showOpenDialog(FrmAnalizadorSintactico.this);
+                if (seleccion == JFileChooser.APPROVE_OPTION) {
+                    txtEntrada.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                }
+            }
+        });
+
+        return temp;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -279,7 +350,6 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     private javax.swing.JButton btnEpsilon;
     private javax.swing.JButton btnFinCadena;
     private javax.swing.JToggleButton btnModo;
-    private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -289,5 +359,6 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     private javax.swing.JTable tblReglas;
     private javax.swing.JTextField txtEntrada;
     private javax.swing.JTextField txtRegla;
+    private javax.swing.JEditorPane txtResultado;
     // End of variables declaration//GEN-END:variables
 }

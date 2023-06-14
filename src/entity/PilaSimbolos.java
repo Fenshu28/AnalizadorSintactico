@@ -21,13 +21,15 @@ public class PilaSimbolos {
     }
 
     public char pop(){
-        char temp;
+        if(tope>-1){
+            char temp;
+            temp = pila.get(tope);
+            pila.remove(tope);
+            tope--;
         
-        temp = pila.get(tope);
-        pila.remove(tope);
-        tope--;
-        
-        return temp;       
+            return temp;    
+        }else
+            return '-';       
     }
 
     public void push(char item) {
@@ -44,5 +46,10 @@ public class PilaSimbolos {
         for(int i = texto.length()-1; i >= 0; i--){
             push(texto.charAt(i));
         }        
+    }
+
+    @Override
+    public String toString() {
+        return pila.toString();
     }
 }

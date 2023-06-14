@@ -17,6 +17,7 @@ public class ASDP {
     private TablaAnalisis tabla;
     private List<Regla> reglas;
     private int iReglaAct;
+    private String resultado;
 
     public ASDP() {
     }
@@ -32,6 +33,7 @@ public class ASDP {
     }
 
     public void analizar() {
+        resultado = "";
         Simbolo A = new Simbolo(reglas);
         Simbolo a = new Simbolo(reglas);
         
@@ -40,7 +42,7 @@ public class ASDP {
         pila.push('$');
         pila.push(reglas.get(0).getNoTerminal().charAt(0));
         
-        a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
+        a.setSimbolo(getToken());//Primer simbolo del preanalisis
                     
         while (A.getSimbolo() != '$') {
             A.setSimbolo(pila.getCima());
@@ -48,12 +50,12 @@ public class ASDP {
             if (A.esTerminal() || A.getSimbolo() == '$') {
                 if (A.getSimbolo() == a.getSimbolo()) {
                     pila.pop();
-                    System.out.println("        Emparejar " + a.getSimbolo());
+                    resultado += "      Emparejar " + a.getSimbolo()+"\n";
                     a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
                 } else {
                     //ErrorSintactico();
-                    System.out.println("Error de sintaxis. no se puede "
-                            + "realizar la reducción.");
+                    resultado += "Error de sintaxis. no se puede "
+                            + "realizar la reducción.\n";
                     break;
                 }
             } else {
@@ -61,27 +63,26 @@ public class ASDP {
                         a.getSimbolo());
                 if (iReglaAct > 0) { 
                     pila.pop();
-                    System.out.println("Reducción a: " + reglas.get(iReglaAct-1).toString());
+                    resultado += "Reducción: " + 
+                            reglas.get(iReglaAct-1).toString() + "\n";
                     iReglaAct--;
                     for (int i = reglas.get(iReglaAct).getProduccion().length()-1; i >= 0; i--) {
-                        if(reglas.get(iReglaAct).getProduccion().charAt(i) != ' ')
+                        if(reglas.get(iReglaAct).getProduccion().charAt(i) != ' ' &&
+                                reglas.get(iReglaAct).getProduccion().charAt(i) != 'ε')
                             pila.push(reglas.get(iReglaAct).getProduccion().charAt(i));
                     }
                 }else {
                     //ErrorSintactico;
-                    System.out.println("Error de sintaxis. no se puede "+
-                            "realizar la reducción.");
+                    resultado += "Error de sintaxis. no se puede "+
+                            "realizar la reducción.\n";
+                    break;
                 }
             }
         }
     }
     
     private char getToken(){
-//        if(resLexico != null){
-            return pilaLexico.pop();
-//        }else{
-//            return 5;
-//        }        
+        return pilaLexico.pop();
     }
 
     public void setPila(PilaSimbolos pila) {
@@ -91,4 +92,8 @@ public class ASDP {
     public void setReglas(List<Regla> reglas) {
         this.reglas = reglas;
     }    
+
+    public String getResultado() {
+        return resultado;
+    }
 }
