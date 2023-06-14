@@ -1,6 +1,9 @@
 package view;
 
+import com.formdev.flatlaf.intellijthemes.FlatArcIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
 import controller.ASDPcontroller;
 import entity.Regla;
 import entity.TablaAnalisis;
@@ -9,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -30,6 +34,10 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         initComponents();
         btnArchivos = hacerBoton();
         modelo = (DefaultTableModel) tblReglas.getModel();
+        ImageIcon icono = new ImageIcon("src/images/logo.png");
+
+        // Establecer el icono de la ventana
+        setIconImage(icono.getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -129,6 +137,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
 
         txtResultado.setEditable(false);
         txtResultado.setBackground(new java.awt.Color(255, 255, 255));
+        txtResultado.setForeground(new java.awt.Color(0, 0, 51));
         txtResultado.setDisabledTextColor(new java.awt.Color(255, 255, 255));
         jScrollPane2.setViewportView(txtResultado);
 
@@ -273,7 +282,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     public static void main(String args[]) {
         try {
 //            UIManager.setLookAndFeel(new FlatMacLightLaf());
-            FlatGrayIJTheme.setup();
+            FlatAtomOneDarkIJTheme.setup();
             FrmAnalizadorSintactico.setDefaultLookAndFeelDecorated(
                     true);
         } catch (Exception ex) {
@@ -332,7 +341,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         temp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser("src/arcivos");
                 int seleccion = fileChooser.showOpenDialog(FrmAnalizadorSintactico.this);
                 if (seleccion == JFileChooser.APPROVE_OPTION) {
                     txtEntrada.setText(fileChooser.getSelectedFile().getAbsolutePath());
