@@ -77,15 +77,15 @@ public class TablaAnalisis {
         terminales.add("$");
     }
     
-    public int getReglaAt(char noTerminal,char terminal){
+    public int getReglaAt(String noTerminal,String terminal){
         int i=0,j=0;
         for (String noTerminalList : noTerminales) {
-            if(noTerminalList.equals(String.valueOf(noTerminal)))
+            if(noTerminalList.equals(noTerminal))
                 break;
             i++;
         }
         for (String TerminalList : terminales) {
-            if(TerminalList.equals(String.valueOf(terminal)))
+            if(TerminalList.equals(terminal))
                 break;
             j++;
         }

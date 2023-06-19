@@ -12,7 +12,7 @@ import java.util.List;
 
 
 public class PilaSimbolos {
-    private List<Character> pila;
+    private List<String> pila;
     private int tope;
     
     public PilaSimbolos(){
@@ -20,31 +20,31 @@ public class PilaSimbolos {
         tope = -1;
     }
 
-    public char pop(){
+    public String pop(){
         if(tope>-1){
-            char temp;
+            String temp;
             temp = pila.get(tope);
             pila.remove(tope);
             tope--;
         
             return temp;    
         }else
-            return '-';       
+            return "-";       
     }
 
-    public void push(char item) {
+    public void push(String item) {
         tope ++;
         this.pila.add(item);
     }
 
-    public char getCima() {
+    public String getCima() {
         return pila.get(tope);
     }    
     
     public void fillPila(String texto){
-        push('$');
+        push("$");
         for(int i = texto.length()-1; i >= 0; i--){
-            push(texto.charAt(i));
+            push(String.valueOf(texto.charAt(i)));
         }        
     }
 

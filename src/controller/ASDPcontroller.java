@@ -11,14 +11,21 @@ package controller;
 import entity.ASDP;
 import entity.Regla;
 import entity.TablaAnalisis;
+import entity.Token;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class ASDPcontroller {
     private ASDP analisis;
+    private List<Token> listToken;;
+
+    public ASDPcontroller() {
+        this.listToken = new ArrayList<Token>();
+    }
     /**
      * Almacena las reglas que el usuario ingreso en una lista.
      * @param modelo
@@ -47,16 +54,16 @@ public class ASDPcontroller {
     /**
      * Comienza el análisis sintactico a partir de algunos parametros:
      * @param tabla
-     * Es el objeto Tabla de análisis en donde tendremos almacenada la tabla de 
+     * Es el objeto {@link TablaAnalisis} en donde tendremos almacenada la tabla de 
      * análisis.
      * @param reglas
-     * Es la lista de reglas ya procesadas.
+     * Es la lista de {@link Regla}, ya procesadas.
      * @param lexico 
      * Es el conjunto de letras que vá a analisar o el archivo de donde sacara
      * el análisis.
      */
     public void crearAnalisis(TablaAnalisis tabla,List<Regla> reglas,String lexico){
-        analisis = new ASDP(lexico);
+        analisis = new ASDP(lexico,listToken);
         analisis.setReglas(reglas);
                 
         analisis.setTablaAnalisis(tabla); 
@@ -75,10 +82,11 @@ public class ASDPcontroller {
             System.out.println("Archivo abierto.");
 
             while ((charFile = rd.read()) != -1) {
-                caracteres += charFile;
+                if(charFile != '\n' && charFile != '\r' && charFile != '\0')
+                    caracteres += String.valueOf((char)charFile);
             }
 
-            caracteres +='$';
+            caracteres += "$";
 
             rd.close();
         } catch (Exception e) {
@@ -90,5 +98,13 @@ public class ASDPcontroller {
     
     public String getResultados(){
         return analisis.getResultado();
+    }
+
+    public void setListToken(List<Token> listToken) {
+        this.listToken = listToken;
+    }
+    
+    public List<Token> getListToken() {
+        return listToken;
     }
 }

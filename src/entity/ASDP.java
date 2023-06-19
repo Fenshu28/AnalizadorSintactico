@@ -9,22 +9,27 @@
 
 package entity;
 
+import analizadores_lexicos.AnalizadorLexico;
 import java.util.List;
 
 public class ASDP {
     private PilaSimbolos pila;
     private PilaSimbolos pilaLexico;
+    private AnalizadorLexico analiadorLexico;
     private TablaAnalisis tabla;
     private List<Regla> reglas;
     private int iReglaAct;
     private String resultado;
+    private String expresion;
 
     public ASDP() {
     }
     
-    public ASDP(String resLexico) {
+    public ASDP(String expresion,List<Token> listToken) {
         pilaLexico = new PilaSimbolos();
-        pilaLexico.fillPila(resLexico);        
+        pilaLexico.fillPila(expresion);
+        this.expresion = expresion;
+        analiadorLexico = new AnalizadorLexico(listToken,this.expresion);
     }
 
     public void setTablaAnalisis(TablaAnalisis tabla) {
@@ -39,22 +44,26 @@ public class ASDP {
         
         pila = new PilaSimbolos();
         
-        pila.push('$');
-        pila.push(reglas.get(0).getNoTerminal().charAt(0));
+        pila.push("$");
+        pila.push(reglas.get(0).getNoTerminal());
         
-        a.setSimbolo(getToken());//Primer simbolo del preanalisis
+        a.setSimbolo(analiadorLexico.getToken());//Primer simbolo del preanalisis
                     
-        while (A.getSimbolo() != '$') {
+        while (!A.getSimbolo().equals("$")) {
             A.setSimbolo(pila.getCima());
             
-            if (A.esTerminal() || A.getSimbolo() == '$') {
-                if (A.getSimbolo() == a.getSimbolo()) {
+            if (A.esTerminal() || A.getSimbolo().equals("$")) {
+                if (A.getSimbolo().equals(a.getSimbolo())) {
                     pila.pop();
                     resultado += "      Emparejar " + a.getSimbolo()+"\n";
-                    a.setSimbolo(getToken());//Siguiente simbolo del preanalisis
+                    a.setSimbolo(analiadorLexico.getToken());//Siguiente simbolo del preanalisis
                 } else {
                     //ErrorSintactico();
-                    resultado += "Error de sintaxis. no se puede "
+                    if(a.getSimbolo().equals("ERROR"))
+                        resultado += "Error de lexico. no se puede "
+                            + "realizar la reducción.\n";
+                    else                        
+                        resultado += "Error de sintaxis. no se puede "
                             + "realizar la reducción.\n";
                     break;
                 }
@@ -69,7 +78,8 @@ public class ASDP {
                     for (int i = reglas.get(iReglaAct).getProduccion().length()-1; i >= 0; i--) {
                         if(reglas.get(iReglaAct).getProduccion().charAt(i) != ' ' &&
                                 reglas.get(iReglaAct).getProduccion().charAt(i) != 'ε')
-                            pila.push(reglas.get(iReglaAct).getProduccion().charAt(i));
+                            pila.push(String.valueOf(
+                                    reglas.get(iReglaAct).getProduccion().charAt(i)));
                     }
                 }else {
                     //ErrorSintactico;
@@ -79,11 +89,15 @@ public class ASDP {
                 }
             }
         }
+        if(!resultado.contains("Error")){
+            resultado += "La cadena :\n "+ expresion +
+                            "\nFue aceptada..\n";
+        }
     }
     
-    private char getToken(){
-        return pilaLexico.pop();
-    }
+//    private String getToken(){
+//        return pilaLexico.pop();
+//    }
 
     public void setPila(PilaSimbolos pila) {
         this.pila = pila;

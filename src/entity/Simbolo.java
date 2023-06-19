@@ -10,22 +10,23 @@ package entity;
 import java.util.List;
 
 public class Simbolo {   
-    private char simbolo;
+    private String simbolo;
     private List<Regla> reglas;
 
     public Simbolo() {
-        this.simbolo = 'L';
+        this.simbolo = "L";
     }
        
     public Simbolo(List<Regla> reglas){
         this.reglas = reglas;
+        this.simbolo = "L";
     }
 
-    public char getSimbolo() {
+    public String getSimbolo() {
         return simbolo;
     }
 
-    public void setSimbolo(char simbolo) {
+    public void setSimbolo(String simbolo) {
         this.simbolo = simbolo;
     }
     
@@ -33,7 +34,7 @@ public class Simbolo {
         boolean encontrado = true;
         
         for (Regla regla : reglas) {
-            if(regla.getNoTerminal().equals(String.valueOf(this.simbolo))){
+            if(regla.getNoTerminal().equals(this.simbolo)){
                 encontrado = false;
                 break;
             }

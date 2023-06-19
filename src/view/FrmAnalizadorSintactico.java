@@ -1,15 +1,13 @@
 package view;
 
-import com.formdev.flatlaf.intellijthemes.FlatArcIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
 import controller.ASDPcontroller;
 import entity.Regla;
 import entity.TablaAnalisis;
-import java.awt.FileDialog;
+import entity.Token;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -26,18 +24,24 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     private TablaAnalisis tabla;
     private String expresion;
     private boolean isPrimero = true;
-    private JButton btnArchivos;
+    private final JButton btnArchivos;
+//    private String regex = "";
+//    private List<Token> listToken;
 
     public FrmAnalizadorSintactico() {
         this.controlador = new ASDPcontroller();
         this.expresion = "";
+        
         initComponents();
         btnArchivos = hacerBoton();
         modelo = (DefaultTableModel) tblReglas.getModel();
-        ImageIcon icono = new ImageIcon("src/images/logo.png");
+        ImageIcon icono = new ImageIcon("src/images/logo_30.png");
 
         // Establecer el icono de la ventana
         setIconImage(icono.getImage());
+
+        FrmTablaAnalisis.setDefaultLookAndFeelDecorated(true);
+        FrmExpresiones.setDefaultLookAndFeelDecorated(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -60,9 +64,15 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         txtResultado = new javax.swing.JEditorPane();
         jLabel3 = new javax.swing.JLabel();
         btnModo = new javax.swing.JToggleButton();
+        flatMenuBar1 = new com.formdev.flatlaf.extras.components.FlatMenuBar();
+        btnInicio = new javax.swing.JMenu();
+        opcAcercade = new com.formdev.flatlaf.extras.components.FlatMenuItem();
+        btnOpc = new javax.swing.JMenu();
+        opcExpReg = new com.formdev.flatlaf.extras.components.FlatMenuItem();
+        opcTabAnalisis = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Analizador sintáctico desendente predictivo");
+        setTitle("ASDP");
         setResizable(false);
 
         jLabel1.setText("Ingresa las reglas:");
@@ -88,9 +98,15 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tblReglas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tblReglasKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblReglas);
 
         btnAgregar.setText("Agregar");
+        btnAgregar.setToolTipText("Agrega regla a la lista.");
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAgregarActionPerformed(evt);
@@ -108,7 +124,10 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
             }
         });
 
+        txtRegla.setToolTipText("Escribe tu regral, para indicar la producción puedes utilizar: \"->\" o \"::=\".");
+
         pnlSimbolos.setBorder(javax.swing.BorderFactory.createTitledBorder("Símbolos"));
+        pnlSimbolos.setToolTipText("Elige simbolos de dificíl acceso.");
         pnlSimbolos.setName(""); // NOI18N
 
         btnFinCadena.setText("$");
@@ -136,19 +155,55 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         pnlSimbolos.add(btnAlfa);
 
         txtResultado.setEditable(false);
-        txtResultado.setBackground(new java.awt.Color(255, 255, 255));
-        txtResultado.setForeground(new java.awt.Color(0, 0, 51));
+        txtResultado.setContentType("html");
         txtResultado.setDisabledTextColor(new java.awt.Color(255, 255, 255));
         jScrollPane2.setViewportView(txtResultado);
 
         jLabel3.setText("Modo");
 
         btnModo.setText("Texto");
+        btnModo.setToolTipText("Cambia el modo de entrada (texto plano o archivo).");
         btnModo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnModoActionPerformed(evt);
             }
         });
+
+        btnInicio.setText("Inicio");
+
+        opcAcercade.setText("Acerca de");
+        opcAcercade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                opcAcercadeActionPerformed(evt);
+            }
+        });
+        btnInicio.add(opcAcercade);
+
+        flatMenuBar1.add(btnInicio);
+
+        btnOpc.setText("Opciones");
+
+        opcExpReg.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        opcExpReg.setText("Expresión regular");
+        opcExpReg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                opcExpRegActionPerformed(evt);
+            }
+        });
+        btnOpc.add(opcExpReg);
+
+        opcTabAnalisis.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        opcTabAnalisis.setText("Tabla de análisis");
+        opcTabAnalisis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                opcTabAnalisisActionPerformed(evt);
+            }
+        });
+        btnOpc.add(opcTabAnalisis);
+
+        flatMenuBar1.add(btnOpc);
+
+        setJMenuBar(flatMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -169,15 +224,15 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAnalizar))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnModo)))
+                        .addComponent(btnModo))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -186,7 +241,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
@@ -204,7 +259,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
                     .addComponent(txtEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAnalizar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -212,36 +267,53 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    public TablaAnalisis getTabla() {
+        return tabla;
+    }
+
+    public void setTabla(TablaAnalisis tabla) {
+        this.tabla = tabla;
+    }
+
+    public ASDPcontroller getControlador() {
+        return controlador;
+    }
+
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
-        if (!txtEntrada.getText().equals("")) {
+//        txtResultado.setText("<p style=\"color: red;\">Iniciando el análisis</p>");
+        if (!txtEntrada.getText().equals("") && !controlador.getListToken().isEmpty()) {
             expresion = getRecurso();
-            reglas = new ArrayList<>();
-            controlador.guardarReglas(modelo, reglas);
 
-            /**
-             * Inicicia el análisis con el texto que se introdujo en el
-             * txtEntrada
-             */
-            txtResultado.setText("Iniciando el análisis\n");
-            if (isPrimero) {
-                tabla = new TablaAnalisis(reglas);
+            if (iniciarParametros()) {
+                /**
+                 * Inicicia el análisis con el texto que se introdujo en el
+                 * txtEntrada
+                 */
+                txtResultado.setText("Iniciando el análisis...\n");
+                if (isPrimero) {
+                    FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis(
+                            FrmAnalizadorSintactico.this,
+                            this,
+                            true);
+                    tablaAnalisisFrm.setTabla(tabla);
+                    tablaAnalisisFrm.setVisible(true);
+                    isPrimero = false;
+                } else {
+                    controlador.crearAnalisis(tabla, reglas, expresion);
+                }
 
-                FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis(
-                        FrmAnalizadorSintactico.this, this,
-                        true);
-                tablaAnalisisFrm.setTabla(tabla);
-                tablaAnalisisFrm.setVisible(true);
-                isPrimero = false;
+                txtResultado.setText(controlador.getResultados());
             } else {
-                controlador.crearAnalisis(tabla, reglas, expresion);
+                JOptionPane.showMessageDialog(this,
+                        "Escribe las reglas o verifica que los datos esten"
+                        + " correctos.", "Error al establecer expresiones.",
+                        JOptionPane.ERROR_MESSAGE);
             }
-            
-            txtResultado.setText(controlador.getResultados());
-//            txtResultado.setText( "La cadena:\n" + expresion + "\n es aceptada."
-//                + "\n------------------------------");
         } else {
             JOptionPane.showMessageDialog(this,
-                    "Ingrea un texo para análisar.", "Advertencia",
+                    "Ingrea un texo para análizar y su expresión regular"
+                    + " en Editar->Expresión regular (ctrl+E).",
+                    "Advertencia",
                     JOptionPane.WARNING_MESSAGE);
         }
 
@@ -279,6 +351,33 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnModoActionPerformed
 
+    private void opcAcercadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opcAcercadeActionPerformed
+
+    }//GEN-LAST:event_opcAcercadeActionPerformed
+
+    private void opcExpRegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opcExpRegActionPerformed
+        if (iniciarParametros()) {
+            FrmExpresiones frmExp = new FrmExpresiones(
+                    FrmAnalizadorSintactico.this, this, true);
+            frmExp.setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(this, 
+                    "Escribe las reglas o verifica que los datos esten"
+                            + " correctos.", "Error al establecer expresiones.", 
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_opcExpRegActionPerformed
+
+    private void tblReglasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblReglasKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
+            modelo.removeRow(tblReglas.getSelectedRow());
+        }
+    }//GEN-LAST:event_tblReglasKeyPressed
+
+    private void opcTabAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opcTabAnalisisActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_opcTabAnalisisActionPerformed
+
     public static void main(String args[]) {
         try {
 //            UIManager.setLookAndFeel(new FlatMacLightLaf());
@@ -298,8 +397,31 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     }
 
     /**
+     * Inicializa las reglas y la tabla de análisis.
+     *
+     * @return {@code true} - si no hubo errores al crearlos.<br> {@code false}
+     * - si hubo algún error al crearlos.
+     */
+    public boolean iniciarParametros() {
+        if (modelo.getRowCount() > 1) {
+            try {
+                reglas = new ArrayList<>();
+                controlador.guardarReglas(modelo, reglas);
+                tabla = new TablaAnalisis(reglas);
+
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Inicia el analicis sintactico, este método permite llamar el análisis
      * desde otros formularios.
+     *
      */
     public void iniciarAnalisis() {
         controlador.crearAnalisis(tabla, reglas, expresion);
@@ -329,11 +451,11 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
             return txtEntrada.getText();
         }
     }
-    
+
     /**
      * Construye el botón para elegir el archivo.
-     * @return 
-     * El botón ya construido, con su evento de hacer click.
+     *
+     * @return El botón ya construido, con su evento de hacer click.
      */
     private JButton hacerBoton() {
         JButton temp = new JButton("...");
@@ -341,7 +463,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         temp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser("src/arcivos");
+                JFileChooser fileChooser = new JFileChooser("src/archivos");
                 int seleccion = fileChooser.showOpenDialog(FrmAnalizadorSintactico.this);
                 if (seleccion == JFileChooser.APPROVE_OPTION) {
                     txtEntrada.setText(fileChooser.getSelectedFile().getAbsolutePath());
@@ -358,12 +480,18 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     private javax.swing.JButton btnAnalizar;
     private javax.swing.JButton btnEpsilon;
     private javax.swing.JButton btnFinCadena;
+    private javax.swing.JMenu btnInicio;
     private javax.swing.JToggleButton btnModo;
+    private javax.swing.JMenu btnOpc;
+    private com.formdev.flatlaf.extras.components.FlatMenuBar flatMenuBar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private com.formdev.flatlaf.extras.components.FlatMenuItem opcAcercade;
+    private com.formdev.flatlaf.extras.components.FlatMenuItem opcExpReg;
+    private javax.swing.JMenuItem opcTabAnalisis;
     private javax.swing.JPanel pnlSimbolos;
     private javax.swing.JTable tblReglas;
     private javax.swing.JTextField txtEntrada;

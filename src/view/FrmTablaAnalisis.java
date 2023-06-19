@@ -1,7 +1,11 @@
-
+/** ***************************************************
+ * Autor: Cristopher Alexis Zarate Valencia           *
+ * Fecha de creación: 14 jun 2023                     *
+ * Fecha de actualización: 14 jun 2023                *
+ * Descripción: Frame para capturar la tabla de ańalisis
+ **************************************************** */
 package view;
 
-import com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme;
 import controller.TablaAnalisisController;
 import entity.TablaAnalisis;
 import java.awt.Frame;
@@ -10,15 +14,15 @@ import javax.swing.table.DefaultTableModel;
 import util.ModeloTabla;
 
 public class FrmTablaAnalisis extends javax.swing.JDialog {
-    private TablaAnalisisController controlador = new TablaAnalisisController();
+    private final TablaAnalisisController controlador = new TablaAnalisisController();
     private FrmAnalizadorSintactico ventAnalisis;
     private DefaultTableModel modeloT;
     private TablaAnalisis tabla;
-    private boolean estado = false;
 
-    public FrmTablaAnalisis(FrmAnalizadorSintactico ventAnalisis, Frame owner, boolean modal) {
+    public FrmTablaAnalisis(FrmAnalizadorSintactico ventAnalisis, Frame owner, 
+            boolean modal) {
         super(owner, modal);
-        initComponents();
+        initComponents();        
         this.ventAnalisis = ventAnalisis;
     }
     
@@ -64,7 +68,7 @@ public class FrmTablaAnalisis extends javax.swing.JDialog {
                         .addContainerGap()
                         .addComponent(jScrollPane2))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 229, Short.MAX_VALUE)
+                        .addGap(0, 214, Short.MAX_VALUE)
                         .addComponent(btnAceptar)))
                 .addContainerGap())
         );
@@ -72,7 +76,7 @@ public class FrmTablaAnalisis extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAceptar)
                 .addContainerGap())
@@ -102,7 +106,7 @@ public class FrmTablaAnalisis extends javax.swing.JDialog {
      * Crea las filas y columas para la tabla de analisis y recupera su modelo
      * para poder manipular sus datos.
      * @param tabla 
-     * Es el objeto que almacena la tabla de análisis que usara el analisador.
+     * Es el objeto que almacena la {@link TablaAnalisis} que usara el analisador.
      */
     public void setTabla(TablaAnalisis tabla){
         this.tabla = tabla;
@@ -162,16 +166,6 @@ public class FrmTablaAnalisis extends javax.swing.JDialog {
         }
         
         return count != ((filas-1)*(columnas-1));
-    }
-
-    public static void main(String args[]) {
-        try {
-//            UIManager.setLookAndFeel(new FlatMacLightLaf());
-            FlatGrayIJTheme.setup();
-            FrmTablaAnalisis.setDefaultLookAndFeelDecorated( true );
-        } catch (Exception ex) {
-            System.err.println("Failed to initialize LaF");
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
