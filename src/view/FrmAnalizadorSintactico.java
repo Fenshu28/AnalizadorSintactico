@@ -2,9 +2,9 @@ package view;
 
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
 import controller.ASDPcontroller;
+import controller.TablaAnalisisController;
 import entity.Regla;
 import entity.TablaAnalisis;
-import entity.Token;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class FrmAnalizadorSintactico extends javax.swing.JFrame {
-
     private final ASDPcontroller controlador;
     private final DefaultTableModel modelo;
     private List<Regla> reglas;
@@ -31,7 +30,8 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     public FrmAnalizadorSintactico() {
         this.controlador = new ASDPcontroller();
         this.expresion = "";
-        
+        this.reglas = new ArrayList<>();
+
         initComponents();
         btnArchivos = hacerBoton();
         modelo = (DefaultTableModel) tblReglas.getModel();
@@ -79,12 +79,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
 
         tblReglas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"S ::=  A B"},
-                {"A ::=  a"},
-                {"A ::=  ε"},
-                {"B ::=  b C d"},
-                {"C ::=  c"},
-                {"C ::= ε"}
+
             },
             new String [] {
                 "Regla"
@@ -114,8 +109,6 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
         });
 
         jLabel2.setText("Ingresa la cadena:");
-
-        txtEntrada.setText("abcd");
 
         btnAnalizar.setText("Analizar");
         btnAnalizar.addActionListener(new java.awt.event.ActionListener() {
@@ -280,7 +273,6 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     }
 
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
-//        txtResultado.setText("<p style=\"color: red;\">Iniciando el análisis</p>");
         if (!txtEntrada.getText().equals("") && !controlador.getListToken().isEmpty()) {
             expresion = getRecurso();
 
@@ -290,17 +282,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
                  * txtEntrada
                  */
                 txtResultado.setText("Iniciando el análisis...\n");
-                if (isPrimero) {
-                    FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis(
-                            FrmAnalizadorSintactico.this,
-                            this,
-                            true);
-                    tablaAnalisisFrm.setTabla(tabla);
-                    tablaAnalisisFrm.setVisible(true);
-                    isPrimero = false;
-                } else {
-                    controlador.crearAnalisis(tabla, reglas, expresion);
-                }
+                controlador.crearAnalisis(tabla, reglas, expresion);
 
                 txtResultado.setText(controlador.getResultados());
             } else {
@@ -352,19 +334,26 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     }//GEN-LAST:event_btnModoActionPerformed
 
     private void opcAcercadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opcAcercadeActionPerformed
-
+        
     }//GEN-LAST:event_opcAcercadeActionPerformed
 
     private void opcExpRegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opcExpRegActionPerformed
-        if (iniciarParametros()) {
+        if (iniciarParametros() && !isPrimero) {
             FrmExpresiones frmExp = new FrmExpresiones(
                     FrmAnalizadorSintactico.this, this, true);
             frmExp.setVisible(true);
-        }else{
-            JOptionPane.showMessageDialog(this, 
+        } else {
+            JOptionPane.showMessageDialog(this,
                     "Escribe las reglas o verifica que los datos esten"
-                            + " correctos.", "Error al establecer expresiones.", 
+                    + " correctos.", "Error al establecer expresiones.",
                     JOptionPane.ERROR_MESSAGE);
+            
+            // Abre la tabla de análisis.
+            FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis(this,
+                    true);
+            tablaAnalisisFrm.setTabla(tabla);
+            tablaAnalisisFrm.setVisible(true);
+            isPrimero = false;
         }
     }//GEN-LAST:event_opcExpRegActionPerformed
 
@@ -375,7 +364,20 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
     }//GEN-LAST:event_tblReglasKeyPressed
 
     private void opcTabAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opcTabAnalisisActionPerformed
-        // TODO add your handling code here:
+        if (iniciarParametros()) {
+            FrmTablaAnalisis tablaAnalisisFrm = new FrmTablaAnalisis(this,
+                    true);
+            tablaAnalisisFrm.setTabla(tabla);
+            tablaAnalisisFrm.setVisible(true);
+            
+            isPrimero = false;
+        }else{
+            JOptionPane.showMessageDialog(this,
+                    "Escribe las reglas o verifica que los datos esten"
+                    + " correctos.", "Error al establecer expresiones.",
+                    JOptionPane.ERROR_MESSAGE);
+            opcExpRegActionPerformed(evt);
+        }
     }//GEN-LAST:event_opcTabAnalisisActionPerformed
 
     public static void main(String args[]) {
@@ -403,7 +405,7 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
      * - si hubo algún error al crearlos.
      */
     public boolean iniciarParametros() {
-        if (modelo.getRowCount() > 1) {
+        if (modelo.getRowCount() > reglas.size()) {
             try {
                 reglas = new ArrayList<>();
                 controlador.guardarReglas(modelo, reglas);
@@ -413,18 +415,11 @@ public class FrmAnalizadorSintactico extends javax.swing.JFrame {
             } catch (Exception e) {
                 return false;
             }
-        } else {
+        }else if(tabla != null){
+            return true;
+        }else {
             return false;
         }
-    }
-
-    /**
-     * Inicia el analicis sintactico, este método permite llamar el análisis
-     * desde otros formularios.
-     *
-     */
-    public void iniciarAnalisis() {
-        controlador.crearAnalisis(tabla, reglas, expresion);
     }
 
     /**

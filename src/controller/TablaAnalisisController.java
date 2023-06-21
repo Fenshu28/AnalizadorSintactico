@@ -12,6 +12,7 @@ import entity.TablaAnalisis;
 import javax.swing.table.DefaultTableModel;
 
 public class TablaAnalisisController {
+    public static boolean activo;
     /**
      * Rellena la tabla con los valores ingresados en la tabla de la ventana
      * @param tabla

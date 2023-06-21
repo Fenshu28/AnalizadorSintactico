@@ -93,6 +93,10 @@ public class TablaAnalisis {
         return tabla[i][j];
     }
     
+    public int getReglaAtIndex(int fila,int columna){        
+        return tabla[fila][columna];
+    }
+    
     public void setValorAt(int fila, int columna,int valor){
         tabla[fila][columna] = valor;
     }

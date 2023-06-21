@@ -15,15 +15,16 @@ import util.ModeloTabla;
 
 public class FrmTablaAnalisis extends javax.swing.JDialog {
     private final TablaAnalisisController controlador = new TablaAnalisisController();
-    private FrmAnalizadorSintactico ventAnalisis;
     private DefaultTableModel modeloT;
     private TablaAnalisis tabla;
 
-    public FrmTablaAnalisis(FrmAnalizadorSintactico ventAnalisis, Frame owner, 
+    public FrmTablaAnalisis( Frame owner, 
             boolean modal) {
         super(owner, modal);
-        initComponents();        
-        this.ventAnalisis = ventAnalisis;
+        initComponents();     
+        if(tabla!=null){
+            cargarTabla();
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -68,7 +69,7 @@ public class FrmTablaAnalisis extends javax.swing.JDialog {
                         .addContainerGap()
                         .addComponent(jScrollPane2))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 214, Short.MAX_VALUE)
+                        .addGap(0, 567, Short.MAX_VALUE)
                         .addComponent(btnAceptar)))
                 .addContainerGap())
         );
@@ -76,7 +77,7 @@ public class FrmTablaAnalisis extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAceptar)
                 .addContainerGap())
@@ -92,7 +93,8 @@ public class FrmTablaAnalisis extends javax.swing.JDialog {
          */
         if(validCampos()){
             controlador.setReglasATablas(tabla, modeloT);
-            ventAnalisis.iniciarAnalisis();  
+            TablaAnalisisController.activo = true;
+            
             this.dispose();
         }else{
             JOptionPane.showMessageDialog(this, 
@@ -167,7 +169,15 @@ public class FrmTablaAnalisis extends javax.swing.JDialog {
         
         return count != ((filas-1)*(columnas-1));
     }
-
+    
+    private void cargarTabla(){
+        for(int i=0;i<modeloT.getRowCount();i++){
+            for(int j=0;j<modeloT.getColumnCount();j++){
+                modeloT.setValueAt(tabla.getReglaAtIndex(i, j), i, j);
+            }
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
     private javax.swing.JScrollPane jScrollPane2;
